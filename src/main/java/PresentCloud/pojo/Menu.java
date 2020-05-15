@@ -9,6 +9,8 @@ import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import java.util.Date;
+
 @Entity
 @Table(name = "menu")
 @JsonIgnoreProperties({ "handler","hibernateLazyInitializer" })
@@ -20,11 +22,16 @@ public class Menu {
     private int id;
     private int fatherId;
     private String name;
-    private String link;
+    private String Url;
+    private String Icon;
     private String order;
     private int isMenu;
     private int isPage;
     private int isVisible;
+    private String Createby;
+    private Date CreateDate;
+    private String Modifyby;
+    private Date ModifyDate;
 
     public int getId() {
         return id;
@@ -50,12 +57,12 @@ public class Menu {
         this.name = name;
     }
 
-    public String getLink() {
-        return link;
+    public String getUrl() {
+        return Url;
     }
 
-    public void setLink(String link) {
-        this.link = link;
+    public void setUrl(String Url) {
+        this.Url = Url;
     }
 
     public String getOrder() {
@@ -88,5 +95,45 @@ public class Menu {
 
     public void setIsVisible(int isVisible) {
         this.isVisible = isVisible;
+    }
+
+    public String getIcon() {
+        return Icon;
+    }
+
+    public void setIcon(String icon) {
+        Icon = icon;
+    }
+
+    public String getCreateby() {
+        return Createby;
+    }
+
+    public void setCreateby(String createby) {
+        Createby = createby;
+    }
+
+    public Date getCreateDate() {
+        return CreateDate;
+    }
+
+    public void setCreateDate(Date createDate) {
+        CreateDate = createDate;
+    }
+
+    public String getModifyby() {
+        return Modifyby;
+    }
+
+    public void setModifyby(String modifyby) {
+        Modifyby = modifyby;
+    }
+
+    public Date getModifyDate() {
+        return ModifyDate;
+    }
+
+    public void setModifyDate(Date modifyDate) {
+        ModifyDate = modifyDate;
     }
 }
