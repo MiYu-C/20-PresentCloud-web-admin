@@ -31,7 +31,7 @@ public class LoginController {
         }else{
             result.setMessage("密码错误");
             result.setFlag("true");
-            result.setCode(401);
+            result.setCode(400);
             return  result;
         }
 
@@ -42,7 +42,20 @@ public class LoginController {
         Tool result = new Tool<>();
         int  id = (int) userMap.get("userId");
         String password=(String) userMap.get("password");
+        String newPassword=(String) userMap.get("newPassword");
+        String confirmPassword=(String) userMap.get("confirmPassword");
+
         User user =userMapper.queryUserById(id);
+        if (! password.equals(user.getPassword())){
+            result.setMessage("密码错误");
+            result.setFlag("false");
+            result.setCode(400);
+        }
+        if (! newPassword.equals(confirmPassword)) {
+            result.setMessage("新密码与确认密码不一致");
+            result.setFlag("false");
+            result.setCode(400);
+        }
         user.setPassword(password);
         userMapper.updateUser(user);
         result.setMessage("修改密码成功");
