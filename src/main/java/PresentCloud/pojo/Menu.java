@@ -19,82 +19,40 @@ public class Menu {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
 
-    private int id;
-    private int fatherId;
-    private String name;
-    private String Url;
+    private int MenuID;
+    private String MenuName;
     private String Icon;
-    private String order;
-    private int isMenu;
-    private int isPage;
-    private int isVisible;
+    private String url;
+    private int ParentMenuID;
+    private String isPage;
+    private String Order;
     private String Createby;
     private Date CreateDate;
     private String Modifyby;
     private Date ModifyDate;
 
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public int getFatherId() {
-        return fatherId;
-    }
-
-    public void setFatherId(int fatherId) {
-        this.fatherId = fatherId;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getUrl() {
-        return Url;
-    }
-
-    public void setUrl(String Url) {
-        this.Url = Url;
-    }
-
     public String getOrder() {
-        return order;
+        return Order;
     }
 
     public void setOrder(String order) {
-        this.order = order;
+        Order = order;
     }
 
-    public int getIsMenu() {
-        return isMenu;
+    public int getMenuID() {
+        return MenuID;
     }
 
-    public void setIsMenu(int isMenu) {
-        this.isMenu = isMenu;
+    public void setMenuID(int menuID) {
+        MenuID = menuID;
     }
 
-    public int getIsPage() {
-        return isPage;
+    public String getMenuName() {
+        return MenuName;
     }
 
-    public void setIsPage(int isPage) {
-        this.isPage = isPage;
-    }
-
-    public int getIsVisible() {
-        return isVisible;
-    }
-
-    public void setIsVisible(int isVisible) {
-        this.isVisible = isVisible;
+    public void setMenuName(String menuName) {
+        MenuName = menuName;
     }
 
     public String getIcon() {
@@ -103,6 +61,30 @@ public class Menu {
 
     public void setIcon(String icon) {
         Icon = icon;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public int getParentMenuID() {
+        return ParentMenuID;
+    }
+
+    public void setParentMenuID(int parentMenuID) {
+        ParentMenuID = parentMenuID;
+    }
+
+    public String getIsPage() {
+        return isPage;
+    }
+
+    public void setIsPage(String isPage) {
+        this.isPage = isPage;
     }
 
     public String getCreateby() {

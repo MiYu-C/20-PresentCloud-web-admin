@@ -6,13 +6,12 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Mapper
-
 @Repository
 public interface RoleMapper {
-
     List <Role> queryRoleNameByRoleId(int id);
     List <Role> queryRoleList();
     Role queryRoleById(int id);
+    Role queryRoleIdByName(String name);
     int addRole(Role role);
     int updateRole(Role role);
     int deleteRole(int id);

@@ -1,58 +1,63 @@
 package PresentCloud.controller;
 
 
+import PresentCloud.annotation.UserLoginToken;
 import PresentCloud.mapper.RoleMapper;
 import PresentCloud.mapper.Transition;
 import PresentCloud.mapper.UserMapper;
-import PresentCloud.pojo.User;
 import PresentCloud.pojo.Role;
+import PresentCloud.pojo.User;
 import PresentCloud.pojo.UserRole;
+import PresentCloud.tool.RedisUtil;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
-
 import javax.servlet.http.HttpServletRequest;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+
 @RestController
 public class UserController {
-
     @Autowired
     private UserMapper userMapper;
     @Autowired
     private RoleMapper roleMapper;
     @Autowired
     private Transition transition;
-
-    @GetMapping("user/list") ///显示用户列表
-    public Tool  queryUserList(){
+    @Autowired
+    private RedisUtil redisUtil;
+    //    @UserLoginToken
+    //  显示用户列表 查询的
+    @GetMapping("user/list")
+    public Tool showlist(HttpServletRequest request) {
         Tool result = new Tool<>();
         result.setMessage("用户管理列表查询成功");
         result.setFlag("true");
         result.setCode(200);
-        List<User> userList=userMapper.queryUserList();
-        List<String> rolenames = new ArrayList<>();
-        List users=new ArrayList<>();///最终得到的一个个放入
-        for (User user:userList) {
-            int userId=user.getId();
-            List<UserRole> userRoles=transition.getRoleIdByUserId(userId);//拿到用户ID 去查询 用户对应的角色ID
-            for (UserRole userRole:userRoles) {
-                int roleid=userRole.getRole_id();
-                List<Role> roleList=roleMapper.queryRoleNameByRoleId(roleid);///用角色ID 查询 用户的角色
-                for (Role role:roleList) {
+        List<User> userList = userMapper.queryUserList();
+        int count = userList.size();
+        List<String> roleNames = new ArrayList<>();
+        List users = new ArrayList<>();  //最终得到的一个个放入
+        for (User user : userList) {
+            int userId = user.getId();
+            List<UserRole> userRoles = transition.getRoleIdByUserId(userId);//拿到用户ID 去查询 用户对应的角色ID
+            for (UserRole userRole : userRoles) {
+                int roleid = userRole.getRole_id();
+                List<Role> roleList = roleMapper.queryRoleNameByRoleId(roleid);///用角色ID 查询 用户的角色
+                for (Role role : roleList) {
                     ///一层只查询一种角色
-                    rolenames.add(role.getName());
+                    roleNames.add(role.getName());
                 }
             }
-            ///得到用户角色数组 rolenames
+            ///得到用户角色数组 roleNames
             ///resuser 代表 返回中的data
-            Map resuser=new HashMap();
-            resuser.put("roleType",rolenames);
-            resuser.put("id",userId);
-            resuser.put("account",user.getAccount());
-            resuser.put("name",user.getName());
+            Map resuser = new HashMap();
+            resuser.put("roleType", roleNames);
+            resuser.put("id", userId);
+            resuser.put("userAccount", user.getUserName());
+            resuser.put("nickname", user.getNickName());
 
             users.add(resuser);
             ///获取用户对应角色 加入到roleType中
@@ -62,35 +67,205 @@ public class UserController {
         return result;
     }
 
-    //添加用户
-    @PostMapping("user")
-    public Tool  addUser(HttpServletRequest request){
+    @PostMapping("user/list/search/{page}/{size}") ///显示用户列表 查询的
+    public Tool queryUserList(@PathVariable("page") int page,@PathVariable("size") int size,
+                              @RequestBody Map<String,Object> searchmap) {
+        Map<String,Object> usermap=(Map<String, Object>) searchmap.get("searchMap");
+        String username=(String)usermap.get("userAccount");
+        String rolename=(String)usermap.get("roleType");
+        String nickname=(String)usermap.get("nickname");
+        int begin=(page-1)*size;
+        int end=page*size-1;
         Tool result = new Tool<>();
-        String userAccount=request.getParameter("userAccount");
-        String sex=request.getParameter("sex");
-        String  nickname=request.getParameter("nickname");
-        String phone=request.getParameter("phone");
-        String academy=request.getParameter("academy");
-        String password=request.getParameter("password");
-        String schoolid=request.getParameter("schoolid");   //表示学号 或者教师工号
-        ///当前操作用户
-        String creater="朱";
-        Date date=new Date();
+        result.setMessage("用户管理列表查询成功");
+        result.setFlag("true");
+        result.setCode(2000);
+        List<User> userList = userMapper.searmap(username,nickname,rolename);
+        int count=userList.size();
+        List<User> usersList2=new ArrayList<>();
+        if (end>=count-1){
+            usersList2=userList.subList(begin,count);
+//            usersList2=userList.subList(0,2); 0,1两个
+            System.out.println("1");
+        }else {
+            usersList2=userList.subList(begin,end+1);
+            System.out.println("2");
+        }
+        List users = new ArrayList<>();///最终得到的一个个放入
+        for (User user : usersList2) {
+            List<String> roleNames = new ArrayList<>();
+            int userId = user.getId();
+            List<UserRole> userRoles = transition.getRoleIdByUserId(userId);//拿到用户ID 去查询 用户对应的角色ID
+            for (UserRole userRole : userRoles) {
+                int roleid = userRole.getRole_id();
+                List<Role> roleList = roleMapper.queryRoleNameByRoleId(roleid);///用角色ID 查询 用户的角色
+                for (Role role : roleList) {
+                    ///一层只查询一种角色
+                    roleNames.add(role.getRolename());
+                }
+            }
+            ///得到用户角色数组 roleNames
+            ///resuser 代表 返回中的data
+            Map resuser = new HashMap();
+            resuser.put("roleType", roleNames);
+            resuser.put("id", userId);
+            resuser.put("userAccount", user.getUserName());
+            resuser.put("nickname", user.getNickName());
+
+            users.add(resuser);
+            ///获取用户对应角色 加入到roleType中
+
+        }
+        HashMap res=new HashMap();
+        res.put("total",count);
+        res.put("rows",users);
+        result.setData(res);
+        return result;
+    }
+
+    @PostMapping("/user") //添加用户
+    public Tool addUser(@RequestBody Map<String, Object> rolemap) {
+        Tool result = new Tool<>();
+//        userAccount nickname roleType
+        String name=(String) rolemap.get("nickname");
+        String roleType=(String) rolemap.get("roleType");
+        String userAccount=(String) rolemap.get("userAccount");
+        System.out.println(name);
 //        SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
-        User user=new User();
-//        user.setAcademy(academy);
-//        user.setUserAccount(userAccount);
-//        user.setSex(sex);
-        user.setName(nickname);;
-//        user.setPhone(phone);
-        user.setPassword(password);
-//        user.setSchoolid(schoolid);
-        user.setCreater(creater);
-        user.setCreatetime(date);
+        User user = new User();
+        user.setNickName(name);
+        user.setUserName(userAccount);
+        user.setPassword("123456");
         userMapper.addUser(user);
         result.setMessage("新增用户成功");
+        //先根据角色名查询角色id  将角色id和新增用户id 加入到userrole标中
+        Role role=roleMapper.queryRoleIdByName(roleType);
+        int roleid=role.getId();
+        User user1=userMapper.queryUserByName(userAccount);
+        int userid=user1.getId();
+        UserRole userRole=new UserRole();
+        userRole.setUser_id(userid);
+        userRole.setRole_id(roleid);
+        transition.addUserRole(userRole);
         result.setFlag("true");
-        result.setCode(200);
+        result.setCode(2000);
+        return result;
+    }
+
+    //    @UserLoginToken
+    @DeleteMapping("user/{id}")//删除用户
+    public Tool deleteUser(@PathVariable int id) {
+        Tool result = new Tool<>();
+        userMapper.deleteUser(id);
+        result.setMessage("删除成功");
+        result.setFlag("true");
+        result.setCode(2000);
+        return result;
+    }
+    //
+//    @UserLoginToken
+    @PutMapping("user/{id}")//修改用户
+    @Transactional
+    public Tool updateUser(@PathVariable int id,@RequestBody Map<String,Object> userMap) {
+        Tool result = new Tool<>();
+        String Username = (String) userMap.get("userAccount");
+        String NickName = (String)userMap.get("nickname");
+        String role = (String)userMap.get("roleType");
+        User user=new User();
+        user.setUserName(Username);
+        user.setNickName(NickName);
+        user.setId(id);
+        userMapper.updateUser(user);
+        transition.deleteUserRole(id);
+        Role role1= roleMapper.queryRoleIdByName(role);
+        UserRole userRole=new UserRole();
+        userRole.setRole_id(role1.getId());
+        userRole.setUser_id(id);
+        transition.addUserRole(userRole);
+        result.setFlag("true");
+        result.setCode(2000);
+        return  result;
+
+    }
+
+    @GetMapping("user/{id}")//根据ID查询用户信息
+    public Tool searchUserbyId(@PathVariable int id) {
+        Tool result = new Tool<>();
+        result.setMessage("成功获取用户信息");
+        result.setFlag("true");
+        result.setCode(2000);
+        User user = userMapper.queryUserById(id);
+        int userId = user.getId();
+        List<String> roleNames = new ArrayList<>();
+        List<UserRole> userRoles = transition.getRoleIdByUserId(userId);
+        for (UserRole userRole : userRoles) {
+            int roleid = userRole.getRole_id();
+            List<Role> roleList = roleMapper.queryRoleNameByRoleId(roleid);///用角色ID 查询 用户的角色
+            for (Role role : roleList) {
+                ///一层只查询一种角色
+                roleNames.add(role.getRolename());
+            }
+        }
+
+        Map resuser = new HashMap();
+        resuser.put("roleType", roleNames);
+        resuser.put("id", userId);
+        resuser.put("nickname",user.getNickName());
+        resuser.put("userAccount", user.getUserName());
+        result.setData(resuser);
+        return result;
+    }
+
+    @GetMapping("login/info/{token}")//根据token 返回用户信息
+    public Tool searchUser(@PathVariable String token) {
+        Tool result = new Tool<>();
+        int id=Integer.parseInt(String.valueOf(redisUtil.get(token)));
+        result.setMessage("成功获取用户信息");
+        result.setFlag("true");
+        result.setCode(2000);
+        User user = userMapper.queryUserById(id);
+        int userId = user.getId();
+        List<String> roleNames = new ArrayList<>();
+        List<UserRole> userRoles = transition.getRoleIdByUserId(userId);
+        for (UserRole userRole : userRoles) {
+            int roleid = userRole.getRole_id();
+            List<Role> roleList = roleMapper.queryRoleNameByRoleId(roleid);///用角色ID 查询 用户的角色
+            for (Role role : roleList) {
+                ///一层只查询一种角色
+                roleNames.add(role.getName());
+            }
+        }
+
+        Map resuser = new HashMap();
+        resuser.put("roles", roleNames);
+        resuser.put("id", userId);
+        resuser.put("name", user.getUserName());
+        result.setData(resuser);
+        return result;
+    }
+
+    //    @UserLoginToken
+    @PutMapping("user/pwd")     // 重置密码
+    public Tool resetPassword(@RequestBody Map<String,Object> userMap) {
+        Tool result = new Tool<>();
+        String phone=(String)userMap.get("userAccount");
+        userMapper.resetPassword(phone);
+        result.setMessage("密码已重置:初始密码为123456");
+        result.setFlag("true");
+        result.setCode(2000);
+        return result;
+    }
+
+    // 修改密码在LoginController实现
+
+    @GetMapping("test")
+    public Tool test(@RequestBody Map<String,Object> userMap) {
+        Tool result = new Tool<>();
+        String username=(String) userMap.get("username");
+        String nickname=(String) userMap.get("nickname");
+        String rolename=(String) userMap.get("rolename");
+        List<User> userList=userMapper.searmap(username,nickname,rolename);
+        result.setData(userList);
         return result;
     }
 }

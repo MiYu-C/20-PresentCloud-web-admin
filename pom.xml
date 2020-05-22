@@ -20,6 +20,27 @@
 
     <dependencies>
 
+        <!--lombok 用在构造函数等 可以省略get，set 方法，可以使代码更简洁-->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.16.18</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!--java-jwt的使用  token -->
+        <dependency>
+            <groupId>com.auth0</groupId>
+            <artifactId>java-jwt</artifactId>
+            <version>3.4.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+            <version>1.2.47</version>
+        </dependency>
+
         <!--redis-->
         <dependency>
             <groupId>org.springframework.data</groupId>
@@ -31,6 +52,10 @@
                 </exclusion>
             </exclusions>
         </dependency>
+        <dependency>
+            <groupId>io.lettuce</groupId>
+            <artifactId>lettuce-core</artifactId>
+        </dependency>
 
         <!--热部署-->
         <dependency>
@@ -39,13 +64,7 @@
             <optional>true</optional>
             <scope>true</scope>
         </dependency>
-        <!--lombok 用在构造函数等-->
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <version>1.16.18</version>
-            <scope>provided</scope>
-        </dependency>
+
         <!--安全-->
         <dependency>
             <groupId>org.springframework.security</groupId>

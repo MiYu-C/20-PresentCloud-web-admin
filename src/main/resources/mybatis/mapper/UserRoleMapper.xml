@@ -6,7 +6,7 @@
     <!--///这里还可以使用缓存-->
     <!--使这个能辨别 要在yml中整合mybatis-->
 
-    <insert id="adduserrole" parameterType="UserRole">
+    <insert id="addUserRole" parameterType="UserRole">
         insert into userrole (roleid,userid,updater,updatetime)
         values (#{roleid},#{userid},#{updater},#{updatetime}
         )

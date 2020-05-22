@@ -7,31 +7,125 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import java.util.Date;
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-@Entity
-@Table(name = "user")
-@JsonIgnoreProperties({ "handler","hibernateLazyInitializer" })
-
+//@Entity
+//@Table(name = "user")
+//@JsonIgnoreProperties({ "handler","hibernateLazyInitializer" })
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private int id;
-    private int role_id;
-    private int identity;
-    private String name;
-    private String account;
-    private String password;
-    private int permission_id;
+    private String UserName;
+    private String NickName;
+    private String Sex;
+    private int Number;
+    private String Mobile;
+    private String Email;
+    private String Password;
+    private String School;
+    private String Department;
+    private String Photo;
+    private int exp;
+    private int CharmValue;
+    private int LanDouNum;
+    private int XinYi;
+    private Date Birthday;
+    private String Createby;
+    private Date CreateDate;
+    private String Modifyby;
+    private Date ModifyDate;
+    private int QianDaoExp;
+    private int ResourceExp;
+    private int taskExp;
+    private int VideoExp;
+    private int TimeExp;
+    private int DiscussExp;
+    private int DianZanExp;
+    private int JoinClassExp;
 
-    private Date createtime;
-    private String creater;
-    private String updater;
-    private Date updatetime;
+    public String getModifyby() {
+        return Modifyby;
+    }
 
+    public void setModifyby(String modifyby) {
+        Modifyby = modifyby;
+    }
+
+    public int getQianDaoExp() {
+        return QianDaoExp;
+    }
+
+    public void setQianDaoExp(int qianDaoExp) {
+        QianDaoExp = qianDaoExp;
+    }
+
+    public int getResourceExp() {
+        return ResourceExp;
+    }
+
+    public void setResourceExp(int resourceExp) {
+        ResourceExp = resourceExp;
+    }
+
+    public int getTaskExp() {
+        return taskExp;
+    }
+
+    public void setTaskExp(int taskExp) {
+        this.taskExp = taskExp;
+    }
+
+    public int getVideoExp() {
+        return VideoExp;
+    }
+
+    public void setVideoExp(int videoExp) {
+        VideoExp = videoExp;
+    }
+
+    public int getTimeExp() {
+        return TimeExp;
+    }
+
+    public void setTimeExp(int timeExp) {
+        TimeExp = timeExp;
+    }
+
+    public int getDiscussExp() {
+        return DiscussExp;
+    }
+
+    public void setDiscussExp(int discussExp) {
+        DiscussExp = discussExp;
+    }
+
+    public int getDianZanExp() {
+        return DianZanExp;
+    }
+
+    public void setDianZanExp(int dianZanExp) {
+        DianZanExp = dianZanExp;
+    }
+
+    public int getJoinClassExp() {
+        return JoinClassExp;
+    }
+
+    public void setJoinClassExp(int joinClassExp) {
+        JoinClassExp = joinClassExp;
+    }
 
     public int getId() {
         return id;
@@ -41,82 +135,155 @@ public class User {
         this.id = id;
     }
 
-    public int getRole_id() {
-        return role_id;
+    public String getUserName() {
+        return UserName;
     }
 
-    public void setRole_id(int role_id) {
-        this.role_id = role_id;
+    public void setUserName(String userName) {
+        UserName = userName;
     }
 
-    public int getIdentity() {
-        return identity;
+    public String getNickName() {
+        return NickName;
     }
 
-    public void setIdentity(int identity) {
-        this.identity = identity;
+    public void setNickName(String nickName) {
+        NickName = nickName;
     }
 
-    public String getName() {
-        return name;
-    }
-    public void setName(String name) {
-        this.name = name;
+    public String getSex() {
+        return Sex;
     }
 
-    public String getAccount() {
-        return account;
+    public void setSex(String sex) {
+        Sex = sex;
     }
 
-    public void setAccount(String account) {
-        this.account = account;
+    public int getNumber() {
+        return Number;
+    }
+
+    public void setNumber(int number) {
+        Number = number;
+    }
+
+    public String getMobile() {
+        return Mobile;
+    }
+
+    public void setMobile(String mobile) {
+        Mobile = mobile;
+    }
+
+    public String getEmail() {
+        return Email;
+    }
+
+    public void setEmail(String email) {
+        Email = email;
     }
 
     public String getPassword() {
-        return password;
+        return Password;
     }
 
     public void setPassword(String password) {
-        this.password = password;
+        Password = password;
     }
 
-    public int getPermission_id() {
-        return permission_id;
+    public String getSchool() {
+        return School;
     }
 
-    public void setPermission_id(int permission_id) {
-        this.permission_id = permission_id;
+    public void setSchool(String school) {
+        School = school;
     }
 
-    public Date getCreatetime() {
-        return createtime;
+    public String getDepartment() {
+        return Department;
     }
 
-    public void setCreatetime(Date createtime) {
-        this.createtime = createtime;
+    public void setDepartment(String department) {
+        Department = department;
     }
 
-    public String getCreater() {
-        return creater;
+    public String getPhoto() {
+        return Photo;
     }
 
-    public void setCreater(String creater) {
-        this.creater = creater;
+    public void setPhoto(String photo) {
+        Photo = photo;
     }
 
-    public String getUpdater() {
-        return updater;
+    public int getExp() {
+        return exp;
     }
 
-    public void setUpdater(String updater) {
-        this.updater = updater;
+    public void setExp(int exp) {
+        this.exp = exp;
     }
 
-    public Date getUpdatetime() {
-        return updatetime;
+    public int getCharmValue() {
+        return CharmValue;
     }
 
-    public void setUpdatetime(Date updatetime) {
-        this.updatetime = updatetime;
+    public void setCharmValue(int charmValue) {
+        CharmValue = charmValue;
+    }
+
+    public int getLanDouNum() {
+        return LanDouNum;
+    }
+
+    public void setLanDouNum(int lanDouNum) {
+        LanDouNum = lanDouNum;
+    }
+
+    public int getXinYi() {
+        return XinYi;
+    }
+
+    public void setXinYi(int xinYi) {
+        XinYi = xinYi;
+    }
+
+    public Date getBirthday() {
+        return Birthday;
+    }
+
+    public void setBirthday(Date birthday) {
+        Birthday = birthday;
+    }
+
+    public String getCreateby() {
+        return Createby;
+    }
+
+    public void setCreateby(String createby) {
+        Createby = createby;
+    }
+
+    public Date getCreateDate() {
+        return CreateDate;
+    }
+
+    public void setCreateDate(Date createDate) {
+        CreateDate = createDate;
+    }
+
+
+    public Date getModifyDate() {
+        return ModifyDate;
+    }
+
+    public void setModifyDate(Date modifyDate) {
+        ModifyDate = modifyDate;
+    }
+
+    public String getToken(User user) {
+        String token="";
+        token= JWT.create().withAudience(String.valueOf(user.getId()))
+                .sign(Algorithm.HMAC256(user.getPassword()));
+        return token;
     }
 }

@@ -1,4 +1,5 @@
 package PresentCloud.tool;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
@@ -10,8 +11,10 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 /**
+ * 参考 简书的代码https://www.jianshu.com/p/3e872c50f274
  * redisTemplate封装
  *
+ *  @author zjjlive@dist.com.cn
  */
 @Component
 public class RedisUtil {
@@ -533,4 +536,5 @@ public class RedisUtil {
             return 0;
         }
     }
+
 }
